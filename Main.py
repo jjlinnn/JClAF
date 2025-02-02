@@ -257,7 +257,7 @@ class Coach:
 				self.audio_UI_matrix = self.buildUIMatrix(u_list_audio, i_list_audio, edge_list_audio)
 				self.audio_UI_matrix = self.model.edgeDropper(self.audio_UI_matrix)
 			print(self.image_UI_matrixuiui._nnz())
-		del diffusionLoaderuiui  # 删除对象
+		del diffusionLoaderuiui  
 		torch.cuda.empty_cache()
 
 
@@ -389,7 +389,7 @@ class Coach:
 				self.audio_UI_matrix = self.model.edgeDropper(self.audio_UI_matrix)
 			print(self.image_UI_matrixuii._nnz())
 
-		del diffusionLoaderuii  # 删除对象
+		del diffusionLoaderuii  
 		torch.cuda.empty_cache()
 
 
@@ -540,14 +540,14 @@ class Coach:
 				usrEmbeds, itmEmbeds = self.model.forward_MM(self.handler.torchBiAdj, self.image_UI_matrix, self.text_UI_matrix)
 				usrEmbeds2, itmEmbeds2 = self.model.forward_MM(self.handler.torchBiAdj, self.image_UI_matrixuiui, self.text_UI_matrixuiui)
 				usrEmbeds3, itmEmbeds3 = self.model.forward_MM(self.handler.torchBiAdj, self.image_UI_matrixuii, self.text_UI_matrixuii)
-			T=5
+			
 			scores_ui = torch.mm(usrEmbeds[ancs], itmEmbeds.t())
 			scores_uiui = torch.mm(usrEmbeds2[ancs], itmEmbeds2.t())
-			scores_uii = torch.mm(usrEmbeds3[ancs], itmEmbeds3.t())#分布
+			scores_uii = torch.mm(usrEmbeds3[ancs], itmEmbeds3.t())#
 
-			q_ui = torch.softmax(scores_ui / T, dim=1)
-			q_uiui = torch.softmax(scores_uiui / T, dim=1)
-			q_uii = torch.softmax(scores_uii / T, dim=1)
+			q_ui = torch.softmax(scores_ui / args.temp_dis, dim=1)
+			q_uiui = torch.softmax(scores_uiui / args.temp_dis, dim=1)
+			q_uii = torch.softmax(scores_uii / args.temp_dis, dim=1)
 
 			h_ui = usrEmbeds.mean(dim=0, keepdim=True) # [1, d]
 			h_uiui = usrEmbeds2.mean(dim=0, keepdim=True) # [1, d]
@@ -595,7 +595,7 @@ class Coach:
 			scoreDiff = pairPredict(ancEmbeds, posEmbeds, negEmbeds)
 			bprLoss = - (scoreDiff).sigmoid().log().sum() / args.batch
 			regLoss = self.model.reg_loss() * args.reg
-			loss = bprLoss + regLoss + (L_dis1 + L_dis2) * T * T
+			loss = bprLoss + regLoss + (L_dis1 + L_dis2) * args.temp_dis * args.temp_dis
 			
 			epRecLoss += bprLoss.item()
 			epLoss += loss.item()

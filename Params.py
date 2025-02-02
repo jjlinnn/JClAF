@@ -33,6 +33,7 @@ def ParseArgs():
 	parser.add_argument('--e_loss', type=float, default=0.1)
 	parser.add_argument('--ris_lambda', type=float, default=0.5)
 	parser.add_argument('--ris_adj_lambda', type=float, default=0.2)
+	parser.add_argument('--temp_dis', type=float, default=5)
 	parser.add_argument('--trans', type=int, default=0, help='0: R*R, 1: Linear, 2: allrecipes')
 	parser.add_argument('--cl_method', type=int, default=0, help='0:m vs m ; 1:m vs main')
 	return parser.parse_args()
